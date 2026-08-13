@@ -5,7 +5,8 @@ const {
     uploadFile,
     getFiles,
     downloadFile,
-    deleteFile
+    deleteFile,
+    getSharedFile
 } = require("../controllers/file.controller");
 
 const router = express.Router();
@@ -18,8 +19,12 @@ router.post(
 
 router.get("/", getFiles);
 
+router.get("/share/:shareId", getSharedFile);
+
 router.get("/:id/download", downloadFile);
 
 router.delete("/:id", deleteFile);
+
+
 
 module.exports = router;

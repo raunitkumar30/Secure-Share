@@ -49,6 +49,20 @@ const deleteFile = async (req, res) => {
 };
 
 
+const getSharedFile = async (req, res) => {
+    const file = await File.findOne({
+        shareId: req.params.shareId
+    });
+
+    if (!file) {
+        return res.status(404).json({
+            message: "Shared file not found"
+        });
+    }
+
+    res.download(file.path, file.originalName);
+};
+
 module.exports = {
-    uploadFile,getFiles,downloadFile,deleteFile
+    uploadFile,getFiles,downloadFile,deleteFile,getSharedFile
 };

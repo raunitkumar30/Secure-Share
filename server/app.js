@@ -4,6 +4,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
 const fileRoutes = require("./routes/file.routes");
+const errorHandler = require("./middleware/error.middleware");
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.post("/test", (req, res) => {
     console.log(req.body);
     res.send("Data received successfully");
 });
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

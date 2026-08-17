@@ -1,5 +1,6 @@
 const express = require("express");
 const upload = require("../middleware/upload.middleware");
+const asyncHandler = require("../middleware/asyncHandler");
 
 const {
     uploadFile,
@@ -14,16 +15,16 @@ const router = express.Router();
 router.post(
     "/upload",
     upload.single("filename"),
-    uploadFile
+    asyncHandler(uploadFile)
 );
 
-router.get("/", getFiles);
+router.get("/", asyncHandler(getFiles));
 
-router.get("/share/:shareId", getSharedFile);
+router.get("/share/:shareId", asyncHandler(getSharedFile));
 
-router.get("/:id/download", downloadFile);
+router.get("/:id/download", asyncHandler(downloadFile));
 
-router.delete("/:id", deleteFile);
+router.delete("/:id", asyncHandler(deleteFile));
 
 
 

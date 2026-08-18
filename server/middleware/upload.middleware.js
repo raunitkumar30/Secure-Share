@@ -1,4 +1,7 @@
-const multer = require('multer');
+const multer = require("multer");
+const crypto = require("crypto");
+const path = require("path");
+
 const fileFilter = (req, file, cb) => {
     const allowedTypes = [
         "application/pdf",
@@ -18,11 +21,14 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, 'uploads/');
+        cb(null, "uploads/");
     },
 
-    filename: function(req,file,cb){
-        cb(null, Date.now() + '-' + file.originalname);
+    filename: function(req, file, cb) {
+        const extension = path.extname(file.originalname);
+        const randomName = crypto.randomBytes(16).toString("hex");
+
+        cb(null, randomName + extension);
     }
 });
 
@@ -31,7 +37,7 @@ const upload = multer({
     limits: {
         fileSize: 10 * 1024 * 1024
     },
-    fileFilter
+    fileFilter: fileFilter
 });
 
 module.exports = upload;

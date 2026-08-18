@@ -16,11 +16,16 @@ const fileSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     shareId: {
-    type: String,
-    unique: true,
-    required: true
-}
+        type: String,
+        unique: true,
+        required: true
+    }
 
 }, {
     timestamps: true

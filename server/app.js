@@ -5,6 +5,7 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const fileRoutes = require("./routes/file.routes");
 const errorHandler = require("./middleware/error.middleware");
+const authRoutes = require("./routes/auth.routes");
 
 const app = express();
 
@@ -16,6 +17,7 @@ connectDB();
 const PORT = 5000;
 
 app.use("/api/files", fileRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req, res) => {
     res.send("Welcome to Secure Share 🚀");

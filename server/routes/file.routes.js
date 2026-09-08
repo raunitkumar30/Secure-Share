@@ -1,6 +1,7 @@
 const express = require("express");
 const upload = require("../middleware/upload.middleware");
 const asyncHandler = require("../middleware/asyncHandler");
+const protect = require("../middleware/auth.middleware");
 
 const {
     uploadFile,
@@ -14,18 +15,37 @@ const router = express.Router();
 
 router.post(
     "/upload",
-    upload.single("filename"),
+    protect,
+    (req, res, next) => {
+        upload.single("filename")(req, res, (err) => {
+            if (err) {
+                return next(err);
+            }
+            next();
+        });
+    },
     asyncHandler(uploadFile)
 );
 
-router.get("/", asyncHandler(getFiles));
+router.get(
+    "/",
+    protect,
+    asyncHandler(getFiles)
+);
 
 router.get("/share/:shareId", asyncHandler(getSharedFile));
 
-router.get("/:id/download", asyncHandler(downloadFile));
+router.get(
+    "/:id/download",
+    protect,
+    asyncHandler(downloadFile)
+);
 
-router.delete("/:id", asyncHandler(deleteFile));
-
+router.delete(
+    "/:id",
+    protect,
+    asyncHandler(deleteFile)
+);
 
 
 module.exports = router;

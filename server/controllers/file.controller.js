@@ -20,12 +20,49 @@ const uploadFile = async (req, res) => {
 };
 
 const getFiles = async (req, res) => {
-    const files = await File.find({
+    const page = Math.max(parseInt(req.query.page) || 1, 1);
+
+    const limit = Math.min(
+        Math.max(parseInt(req.query.limit) || 10, 1),
+        50
+    );
+
+    const skip = (page - 1) * limit;
+
+    const search = req.query.search?.trim();
+
+    const filter = {
         owner: req.user.userId
-    });
+    };
+
+    if (search) {
+        filter.originalName = {
+            $regex: search,
+            $options: "i"
+        };
+    }
+
+    const [files, totalFiles] = await Promise.all([
+        File.find(filter)
+            .select("-__v -path -storedName")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit),
+
+        File.countDocuments(filter)
+    ]);
+
+    const totalPages = Math.ceil(totalFiles / limit);
+
     res.status(200).json({
         message: "Files retrieved successfully",
-        files: files
+        pagination: {
+            page,
+            limit,
+            totalFiles,
+            totalPages
+        },
+        files
     });
 };
 

@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+
 const fileSchema = new mongoose.Schema({
     originalName: {
         type: String,
@@ -23,13 +24,27 @@ const fileSchema = new mongoose.Schema({
     },
     shareId: {
         type: String,
-        unique: true,
-        required: true
+        default: null
+    },
+    shareExpiresAt: {
+        type: Date,
+        default: null
     }
-
 }, {
     timestamps: true
 });
 
-const File = mongoose.model('File', fileSchema);
+// Enforce uniqueness only for actual share tokens.
+fileSchema.index(
+    { shareId: 1 },
+    {
+        unique: true,
+        partialFilterExpression: {
+            shareId: { $type: "string" }
+        }
+    }
+);
+
+const File = mongoose.model("File", fileSchema);
+
 module.exports = File;

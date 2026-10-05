@@ -3,7 +3,17 @@ const crypto = require("crypto");
 const path = require("path");
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = [
+    const allowedExtensions = [
+        ".pdf",
+        ".doc",
+        ".docx",
+        ".txt",
+        ".jpg",
+        ".jpeg",
+        ".png"
+    ];
+
+    const allowedMimeTypes = [
         "application/pdf",
         "application/msword",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -12,7 +22,19 @@ const fileFilter = (req, file, cb) => {
         "image/png"
     ];
 
-    if (allowedTypes.includes(file.mimetype)) {
+    const extension = path.extname(file.originalname).toLowerCase();
+
+    console.log("Original Name:", file.originalname);
+    console.log("MIME Type:", file.mimetype);
+    console.log("Extension:", extension);
+
+    if (
+        allowedExtensions.includes(extension) &&
+        (
+            allowedMimeTypes.includes(file.mimetype) ||
+            file.mimetype === "application/octet-stream"
+        )
+    ) {
         cb(null, true);
     } else {
         cb(new Error("File type not allowed"), false);

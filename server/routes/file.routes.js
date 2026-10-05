@@ -8,7 +8,8 @@ const {
     getFiles,
     downloadFile,
     deleteFile,
-    getSharedFile
+    getSharedFile,
+    generateShareLink
 } = require("../controllers/file.controller");
 
 const router = express.Router();
@@ -47,5 +48,10 @@ router.delete(
     asyncHandler(deleteFile)
 );
 
+router.post(
+    "/:id/share",
+    protect,
+    asyncHandler(generateShareLink)
+);
 
 module.exports = router;
